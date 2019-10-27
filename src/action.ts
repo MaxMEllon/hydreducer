@@ -1,4 +1,4 @@
-export type Action<P> = P extends Function ? never : {
+export type Action<P> = {
   type: string,
   payload?: P
   meta?: Record<string | symbol, any>
@@ -31,15 +31,20 @@ const validateActionType = (type: string) => {
   return type
 }
 
-export function createAction<P = void>(type: string, meta?: Object | undefined, error?: boolean): ActionCreator<P> {
+export function createAction<P = void>(type: string, meta?: Record<string | symbol, any>, error?: boolean): ActionCreator<P> {
   const t = validateActionType(type)
   const action = (payload: P): Action<P> => {
-    return {
+    const isError = payload instanceof Error || error
+    return isError ? {
       type: t,
       payload,
       meta,
-      error: payload instanceof Error || error
-    } /* TODO */ as Action<P>
+      error: isError
+    } : {
+      type: t,
+      payload,
+      meta,
+    }
   }
   action.is = (target: string | { type: string }): boolean => {
     if (typeof target === "string") {
