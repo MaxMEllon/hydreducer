@@ -4,7 +4,6 @@ import { createStore, Store } from 'store'
 
 type PayloadType<A> = A extends ActionCreator<infer P> ? P : never
 
-
 class Module<S extends Record<string, any>, A> {
   private state: S 
   private actions: A
@@ -23,6 +22,7 @@ class Module<S extends Record<string, any>, A> {
   }
 
   useModuleState<R>(selector: (state: S) => R) {
+    // TODO: memoized and use context of react
     return selector(this.state)
   }
 
@@ -49,5 +49,9 @@ const createModule = {
     }
   }
 }
+
+export { createAction, createActionFactory, createProgressAction, Action, AnyAction } from "action"
+export { Reducer } from "reducer"
+export { Store } from "store"
 
 export default createModule
