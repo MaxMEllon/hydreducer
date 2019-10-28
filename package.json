@@ -15,7 +15,6 @@
     "test": "tsdx test",
     "lint": "tsdx lint"
   },
-  "peerDependencies": {},
   "husky": {
     "hooks": {
       "pre-commit": "tsdx lint"
@@ -29,9 +28,17 @@
   },
   "devDependencies": {
     "@types/jest": "^24.0.20",
+    "@types/react": "^16.9.11",
+    "@types/react-dom": "^16.9.3",
     "husky": "^3.0.9",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
     "tsdx": "^0.10.5",
     "tslib": "^1.10.0",
     "typescript": "^3.6.4"
+  },
+  "peerDependencies": {
+    "react": ">= 16.8",
+    "react-dom": ">= 16.8"
   }
 }
