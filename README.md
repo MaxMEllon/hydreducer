@@ -26,7 +26,7 @@
 # Example
 
 ```typescript
-const [actions, useAction, useModuleState] = createModule
+const [actions, Provider, useAction, useModuleState] = createModule
   .initialState({
     count: 0
   })
@@ -52,9 +52,9 @@ const [actions, useAction, useModuleState] = createModule
   ))
   .build()
 
-// like `useDispatch` in redux
-const setCount = useAction(actions.setCount)
-// like `useSelector` in redux
+// original API (like as useDispatch + useCallback)
+const increment = useAction(() => actions.increment())
+// like `useSelector` in react-redux
 const count = useModuleState(state => state.count)
 ```
 

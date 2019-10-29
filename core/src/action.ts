@@ -64,19 +64,15 @@ export function createAction<P = void>(
 }
 
 export function createProgressAction<P, S, E = Error>(type: string) {
-  const readyType = validateActionType(`${type}/ready`);
-  const successType = validateActionType(`${type}/success`);
-  const failureType = validateActionType(`${type}/failure`);
   return {
-    ready: createAction<P>(readyType),
-    success: createAction<S>(successType),
-    failure: createAction<E>(failureType),
+    ready: createAction<P>(`${type}/ready`),
+    success: createAction<S>(`${type}/success`),
+    failure: createAction<E>(`${type}/failure`),
   };
 }
 
 export function createActionFactory(prefix: string) {
   return <P = void>(type: string) => {
-    const t = validateActionType(`${prefix}/${type}`);
-    return createAction<P>(t);
+    return createAction<P>(`${prefix}/${type}`);
   };
 }

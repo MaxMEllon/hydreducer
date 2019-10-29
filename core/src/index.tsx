@@ -1,10 +1,10 @@
-import { Context, createContext } from 'react';
-import { ActionCreator } from './action';
+import React, { Context, createContext, useMemo } from 'react';
+import { ActionCreator, Action } from './action';
 import { Reducer, createReducerWithInitialState } from './reducer';
 import { createStore, Store } from './store';
 import { createSelectorHooks } from './hooks';
 
-type PayloadType<A> = A extends ActionCreator<infer P> ? P : never;
+type PayloadType<A> = A extends ActionCreator<infer P> ? P : any;
 
 class Module<S extends Record<string, any>, A> {
   private state: S;
@@ -19,26 +19,36 @@ class Module<S extends Record<string, any>, A> {
     this.reducer = reducer;
     this.store = createStore(this.state, this.reducer);
     this.context = createContext(this.store);
+
+    this.useAction = this.useAction.bind(this)
+    this.useModuleState = this.useModuleState.bind(this)
   }
 
-  useAction<A extends ActionCreator<any>>(actionCreator: A) {
-    return (payload: PayloadType<A>) =>
-      this.store.dispatch(actionCreator(payload));
+  useAction<A extends (ActionCreator<any> | (() => Action<any>))>(actionCreator: A) {
+    return useMemo(() => (payload: PayloadType<A>) => {
+      this.store.dispatch(actionCreator(payload))
+    }, [])
   }
 
   useModuleState<R>(selector: (state: S) => R) {
     return createSelectorHooks<S, R>(selector, this.context);
   }
 
-  build(): [A, this['useAction'], this['useModuleState']] {
-    return [this.actions, this.useAction, this.useModuleState];
+  build(): [A, React.FC, this['useAction'], this['useModuleState']] {
+    const OriginalProvider = this.context.Provider
+    const Provider: React.FC = ({ children }) => (
+      <OriginalProvider value={this.store}>
+        {children}
+      </OriginalProvider>
+    )
+    return [this.actions, Provider, this.useAction, this.useModuleState];
   }
 }
 
-const createModule = {
+export const createModule = {
   initialState<S>(state: S) {
     return {
-      actions<A extends Record<string, ActionCreator<any>>>(actions: A) {
+      actions<A>(actions: A) {
         return {
           reducer(callback: (actions: A, reducer: Reducer<S>) => Reducer<S>) {
             const reducer = callback(
@@ -66,5 +76,3 @@ export {
 } from './action';
 export { Reducer } from './reducer';
 export { Store } from './store';
-
-export default createModule;
