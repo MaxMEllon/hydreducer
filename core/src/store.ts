@@ -1,13 +1,13 @@
 import { Reducer } from './reducer';
 import { AnyAction } from './action';
 
-const isomorphicDeffered = 
+const isomorphicDeffered =
   typeof window !== 'undefined' &&
   typeof window.document !== 'undefined' &&
   typeof window.document.createElement !== 'undefined' &&
-  typeof window.requestAnimationFrame  === 'function'
-    ? window.requestAnimationFrame
-    : setTimeout
+  typeof window.requestAnimationFrame  !== 'function'
+    ? (f: () => any) => f()
+    : window.requestAnimationFrame
 
 export class Store<S> {
   private state: S;
