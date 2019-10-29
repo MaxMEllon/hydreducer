@@ -63,6 +63,7 @@ const count = useModuleState(state => state.count)
 - [typeless](https://github.com/typeless-js/typeless)
 - [typescript-fsa](https://github.com/aikoven/typescript-fsa)
 - [typescript-fsa-reducers](https://github.com/dphilipson/typescript-fsa-reducers)
+- [mobx-state-tree](https://github.com/mobxjs/mobx-state-tree)
 
 # TODO
 
