@@ -7,6 +7,7 @@ import {
   useReducer,
 } from 'react';
 import { Store } from './store';
+import { shallowEqual } from './utils/fbjs-shallowCompare';
 
 const useIsomorphicLayoutEffect =
   typeof window !== 'undefined' &&
@@ -63,7 +64,7 @@ function useSelctor<S, R>(
 export function createSelectorHooks<S, R>(
   selector: (state: S) => R,
   context: Context<Store<S>>,
-  compare: <S>(a: S, b: S) => boolean = (a, b) => a === b
+  compare: <S>(a: S, b: S) => boolean = shallowEqual
 ) {
   /* eslint react-hooks/rules-of-hooks: [0] */
   return useSelctor<S, R>(selector, context, compare);
